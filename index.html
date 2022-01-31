@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Jabuti X</title>
+    <link rel="stylesheet" href="stylesheet.css">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+
+    <img id="jabuti-image" src = "resource/virtual-jabuti.svg" style="display:none;"/>
+    
+    <img id="right-arrow" src = "resource/right-arrow.svg" style="display:none;"/>
+    <img id="up-arrow" src = "resource/up-arrow.svg" style="display:none;"/>
+    <img id="left-arrow" src = "resource/left-arrow.svg" style="display:none;"/>
+    <img id="down-arrow" src = "resource/down-arrow.svg" style="display:none;"/>
+
+    
+
+    <div id="mainAreaDiv">
+
+      <canvas id="canvas"></canvas>
+
+      <div id="blockProgrammingAreaDiv">
+
+        <div id="blocklyDiv"></div>
+
+        <textarea id="output" disabled="disabled"></textarea>
+
+      </div>
+
+    </div>
+
+    <div id="controls-div">
+
+      <select id="viewSelection-jabuti-mode">
+          <option value="Jabuti virtual">Jabuti virtual</option>
+      <option value="Câmera do jabuti físico">Câmera do jabuti físico</option>
+      </select>
+
+      <p>
+        <button onclick="executeButtonCallback()" id="executeButton" class="buttonClass">Executar programa</button>
+      </p>
+
+      <input type = "checkbox" id = "stepCode" onchange="stepCodeCheckboxClicked();"">
+      <label for = "stepCode"> Executar bloco a bloco </label>
+
+      <p>
+        <button onclick="stopCodeExecution()" id="stopCodeExecutionButton">Parar execução</button>
+      </p>
+
+      <div id="divBasicModesSelection">
+        <button onclick="normalModeButtonCallback()" id="normalModeButtonCallback">Modo normal</button>
+        <button onclick="loopChallengeButtonCallback()" id="loopChallengeButton">Desafio do loop</button>
+        <button onclick="conditionalsChallengeButtonCallback()" id="conditionalsChallengeButton">Desafio das condicionais</button>
+      </div>
+
+      <br>
+
+      <div id="divGameLevelSelection">
+
+      <button onclick="gameLevelButton_callback()" id="gameLevelButton">Iniciar nível</button>
+
+      <select id="viewSelection-level">
+        <option value="Nível 1">Nível 1</option>
+        <option value="Nível 2">Nível 2</option>
+        <option value="Nível 3">Nível 3</option>
+        <option value="Nível 4">Nível 4</option>
+        <option value="Nível 5">Nível 5</option>
+        <option value="Nível 6">Nível 6</option>
+      </select>
+
+    </div>
+
+  </div>
+
+    <!-- JS-Interpreter -->
+    <script src="Blockly/acorn_interpreter.js"></script>
+
+    <!-- Blockly stuff -->
+    <script src="Blockly/blockly_compressed.js"></script>
+    <script src="Blockly/blocks_compressed.js"></script>
+    <script src="Blockly/javascript_compressed.js"></script>
+    <script src="Blockly/pt-br.js"></script>
+    
+
+    <!-- Blockly XML definitions -->
+    <xml id="toolbox" style="display: none">
+      <category name="Lógica" colour="%{BKY_LOGIC_HUE}">
+        <block type="controls_if"></block>
+        <block type="logic_compare"></block>
+        <block type="logic_operation"></block>
+        <block type="logic_negate"></block>
+        <block type="logic_boolean"></block>
+      </category>
+      <category name="Laços de repetição" colour="%{BKY_LOOPS_HUE}">
+        <block type="controls_repeat_ext">
+          <value name="TIMES">
+            <block type="math_number">
+              <field name="NUM">10</field>
+            </block>
+          </value>
+        </block>
+        <block type="controls_whileUntil"></block>
+      </category>
+      <category name="Matemática" colour="%{BKY_MATH_HUE}">
+        <block type="math_number">
+          <field name="NUM">123</field>
+        </block>
+        <block type="math_arithmetic"></block>
+        <block type="math_single"></block>
+      </category>
+      <category name="Texto" colour="%{BKY_TEXTS_HUE}">
+        <block type="text"></block>
+        <block type="text_length"></block>
+        <block type="text_print"></block>
+        <block type="text_prompt_ext">
+          <value name="TEXT">
+            <block type="text"></block>
+          </value>
+        </block>
+      </category>
+      <sep></sep>
+      <category name="Variáveis" custom="VARIABLE" colour="%{BKY_VARIABLES_HUE}">
+      </category>
+      <category name="Funções" custom="PROCEDURE" colour="%{BKY_PROCEDURES_HUE}">
+      </category>
+      <category name="Jabuti X" colour=0>
+        <block type="jabuti_move_forward"></block>
+        <block type="jabuti_move_left"></block>
+        <block type="jabuti_move_right"></block>
+        <block type="jabuti_sees_left_sign_ahead"></block>
+        <block type="jabuti_sees_right_sign_ahead"></block>
+        <block type="functions_wait"></block>
+      </category>
+    </xml>
+  
+    <xml xmlns="https://developers.google.com/blockly/xml" id="startBlocks" style="display: none">
+      <block type="variables_set" id="set_n_initial" inline="true" x="20" y="20">
+        <field name="VAR">n</field>
+        <value name="VALUE">
+          <block type="math_number">
+            <field name="NUM">1</field>
+          </block>
+        </value>
+        <next>
+          <block type="controls_repeat_ext" id="repeat" inline="true">
+            <value name="TIMES">
+              <block type="math_number">
+                <field name="NUM">4</field>
+              </block>
+            </value>
+            <statement name="DO">
+              <block type="variables_set" id="set_n_update" inline="true">
+                <field name="VAR">n</field>
+                <value name="VALUE">
+                  <block type="math_arithmetic" inline="true">
+                    <field name="OP">MULTIPLY</field>
+                    <value name="A">
+                      <block type="variables_get">
+                        <field name="VAR">n</field>
+                      </block>
+                    </value>
+                    <value name="B">
+                      <block type="math_number">
+                        <field name="NUM">2</field>
+                      </block>
+                    </value>
+                  </block>
+                </value>
+                <next>
+                  <block type="text_print" id="print">
+                    <value name="TEXT">
+                      <block type="variables_get">
+                        <field name="VAR">n</field>
+                      </block>
+                    </value>
+                  </block>
+                </next>
+              </block>
+            </statement>
+          </block>
+        </next>
+      </block>
+    </xml>
+
+    <script src="js/CanvasHandler/Simulation/VirtualJabuti/VirtualJabuti.js"></script>
+    <script src="js/CanvasHandler/Simulation/Map/Map.js"></script>
+    <script src="js/CanvasHandler/Simulation/Simulation.js"></script>
+    <script src="js/CanvasHandler/Gamification/Gamification.js"></script>
+    <script src="js/CanvasHandler/CanvasHandler.js"></script>
+    
+    <script defer src="js/BlockProgramming/BlockProgramming.js"></script>
+    <script defer src="js/CustomBlocks/CustomBlocks.js"></script>
+    <script defer src="js/main.js"></script>
+
+</body>
+
+</html>
